@@ -4,170 +4,150 @@
     <meta charset="UTF-8">
     <title>Generador de Tablas de Bingo</title>
     <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0 auto;
+        padding: 10px;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .section {
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background-color: #f8f9fa;
+    }
+
+    .input-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 3px;
+        margin: 10px auto;
+        max-width: 280px;
+    }
+
+    .input-cell {
+        width: 100%;
+        height: 40px;
+        text-align: center;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        background-color: white;
+    }
+
+    .free-space {
+        background-color: #e9ecef;
+        font-size: 10px;
+    }
+
+    .bingo-table {
+        display: block;
+        margin: 15px auto;
+        padding: 10px;
+        border: 2px solid #dee2e6;
+        border-radius: 12px;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 320px;
+    }
+
+    .bingo-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 2px;
+        margin: 10px 0;
+    }
+
+    .bingo-cell {
+        width: 100%;
+        aspect-ratio: 1;
+        border: 1px solid #ced4da;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        background-color: white;
+        border-radius: 4px;
+    }
+
+    .highlight {
+        background-color: #fff3cd !important;
+        border-color: #ffeeba !important;
+    }
+
+    .controls {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    button {
+        padding: 12px;
+        margin: 4px 0;
+        font-size: 16px;
+        border-radius: 8px;
+        width: 100%;
+        background-color: #007bff;
+        transition: all 0.2s;
+    }
+
+    button:hover {
+        filter: brightness(0.95);
+    }
+
+    button.clear-all {
+        background-color: #dc3545;
+    }
+
+    input[type="text"] {
+        padding: 12px;
+        margin: 8px 0;
+        width: 100%;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        box-sizing: border-box;
+    }
+
+    h2 {
+        font-size: 1.4rem;
+        color: #333;
+        margin: 10px 0;
+    }
+
+    h3 {
+        font-size: 1.2rem;
+        color: #444;
+        margin: 8px 0;
+        text-align: center;
+    }
+
+    /* Estilos para desktop */
+    @media (min-width: 768px) {
         body {
-            font-family: Arial, sans-serif;
-            margin: 0 auto;
-            padding: 15px;
-            max-width: 1200px;
-            background-color: #444444;
+            padding: 20px;
         }
-
-        .section {
-            margin-top: 100px;
-            margin-bottom: 25px;
-            padding: 15px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-        }
-
-        .input-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 3px;
-            margin: 15px 0;
-            max-width: 300px;
-        }
-
-        .input-cell {
-            width: 100%;
-            height: 40px;
-            text-align: center;
-            border: 1px solid #999;
-            border-radius: 4px;
-            font-size: 14px;
-            box-sizing: border-box;
-        }
-
-        .free-space {
-            background-color: #eee;
-            font-size: 0.7em;
-        }
-
+        
         .bingo-table {
-            display: block;
-            margin: 15px auto;
-            padding: 10px;
-            border: 2px solid #666;
-            border-radius: 8px;
-            max-width: 300px;
+            max-width: 400px;
         }
-
-        .bingo-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 2px;
-            margin: 10px 0;
-        }
-
-        .bingo-cell {
-            width: 100%;
-            aspect-ratio: 1;
-            border: 1px solid #999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            background-color: white;
-            box-sizing: border-box;
-        }
-
-        .highlight {
-            background-color: #ffeb3b !important;
-        }
-
+        
         .controls {
-            margin-top: 10px;
-            display: flex;
+            flex-direction: row;
             flex-wrap: wrap;
-            gap: 5px;
         }
-
+        
         button {
-            padding: 8px 12px;
-            margin: 3px;
-            font-size: 14px;
-            flex: 1;
-            min-width: 120px;
+            width: auto;
+            flex: 1 0 auto;
         }
-
-        input[type="text"] {
-            padding: 8px;
-            margin: 5px 0;
-            width: 100%;
-            box-sizing: border-box;
-            max-width: 300px;
-        }
-
-        .search-section {
-            margin: 15px 0;
-        }
-        .titulo {
-            width: 300px;
-            height: auto;
-            position: absolute;
-            /*centramos horizontalmente el div*/
-            left: 50%;
-            margin-left: -150px;
-            margin-top: 20px;
-        }
-        h1 {
-            text-align: center;
-            margin: 10;
-            animation-name: font;
-            animation-duration: 1s;
-            animation-iteration-count: infinite;
-            color: white;
-        }
-        /*Animnación font*/
-        @keyframes font {
-            0% {font-size: 20px; color: blue;}
-            25% {color: #ffeb3b; rotate: 15deg;}
-            50% {font-size: 30px;}
-            75% {color: red; rotate: -15deg;}
-            100% {font-size: 20px;}
-        }
-
-        h2 {
-            color: white;
-            font-size: 1.3em;
-            margin: 10px 0;
-        }
-
-        h3 {
-            font-size: 1.1em;
-            margin: 8px 0;
-            text-align: center;
-            color: white;
-        }
-
-        @media (min-width: 600px) {
-            .bingo-table {
-                display: inline-block;
-                margin: 10px;
-                max-width: none;
-            }
-            
-            .input-grid {
-                max-width: none;
-            }
-            
-            .input-cell {
-                height: 50px;
-                font-size: 16px;
-            }
-            
-            button {
-                flex: none;
-                min-width: auto;
-            }
-            
-            .bingo-cell {
-                font-size: 16px;
-                width: 40px;
-                height: 40px;
-            }
-        }
-    </style>
+    }
+</style>
 </head>
 <body>
     <div class="titulo">
