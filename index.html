@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Generador de Tablas de Bingo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+            margin: 20px 0;
+        }
+
+        .input-cell {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            border: 1px solid #999;
+            border-radius: 3px;
+        }
+
+        .free-space {
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+        }
+
+        .bingo-table {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px;
+            border: 2px solid #666;
+            border-radius: 10px;
+            vertical-align: top;
+        }
+
+        .bingo-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 3px;
+            margin: 10px 0;
+        }
+
+        .bingo-cell {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            background-color: white;
+        }
+
+        .highlight {
+            background-color: #ffeb3b !important;
+        }
+
+        .controls {
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 8px 15px;
+            margin: 5px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        button.clear-all {
+            background-color: #f44336;
+        }
+
+        button.clear-all:hover {
+            background-color: #da190b;
+        }
+
+        input[type="text"] {
+            padding: 5px;
+            margin: 5px;
+            width: 200px;
+        }
+
+        .search-section {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="section">
+        <h2>Crear Nueva Tabla</h2>
+        <div class="input-grid" id="inputGrid"></div>
+        <input type="text" id="tableName" placeholder="Nombre de la tabla">
+        <div class="controls">
+            <button onclick="createBingoTable()">Crear Tabla</button>
+            <button onclick="clearInputs()">Limpiar Campos</button>
+        </div>
+    </div>
+
+    <div class="section search-section">
+        <h2>Buscar Número</h2>
+        <input type="text" id="searchInput" placeholder="Ingrese número a buscar">
+        <button onclick="searchNumber()">Buscar</button>
+        <button onclick="clearAllHighlights()" class="clear-all">Limpiar Todo</button>
+    </div>
+
+    <div id="tablesContainer"></div>
+
+    <script>
+        // Inicializar la cuadrícula de entrada
+        function initializeInputGrid() {
+            const grid = document.getElementById('inputGrid');
+            for (let i = 0; i < 25; i++) {
+                const cell = document.createElement('input');
+                cell.type = 'text';
+                cell.className = 'input-cell';
+                cell.maxLength = 2;
+                
+                // Marcar la celda central como espacio libre
+                if (i === 12) {
+                    cell.placeholder = 'FREE';
+                    cell.disabled = true;
+                    cell.className = 'input-cell free-space';
+                }
+                grid.appendChild(cell);
+            }
+        }
+
+        // Crear nueva tabla de bingo
+        function createBingoTable() {
+            const inputs = document.querySelectorAll('#inputGrid .input-cell:not(.free-space)');
+            const tableName = document.getElementById('tableName').value;
+            
+            // Validar que todos los campos estén llenos
+            let isValid = true;
+            inputs.forEach(input => {
+                if (!input.value.trim()) isValid = false;
+            });
+
+            if (!isValid) {
+                alert('¡Debes llenar todos los campos!');
+                return;
+            }
+
+            // Crear contenedor de tabla
+            const tableDiv = document.createElement('div');
+            tableDiv.className = 'bingo-table';
+            
+            // Nombre de la tabla
+            const nameElement = document.createElement('h3');
+            nameElement.textContent = tableName || 'Tabla sin nombre';
+            
+            // Crear cuadrícula de bingo
+            const grid = document.createElement('div');
+            grid.className = 'bingo-grid';
+            
+            for (let i = 0; i < 25; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'bingo-cell';
+                
+                if (i === 12) {
+                    cell.textContent = 'FREE';
+                    cell.style.backgroundColor = '#eee';
+                } else {
+                    const index = i < 12 ? i : i - 1;
+                    cell.textContent = inputs[index].value;
+                }
+                grid.appendChild(cell);
+            }
+
+            // Botones de control
+            const controls = document.createElement('div');
+            controls.className = 'controls';
+            
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Eliminar Tabla';
+            deleteButton.onclick = () => tableDiv.remove();
+            
+            const clearButton = document.createElement('button');
+            clearButton.textContent = 'Limpiar Marcadores';
+            clearButton.onclick = () => {
+                grid.querySelectorAll('.bingo-cell').forEach(cell => {
+                    cell.classList.remove('highlight');
+                });
+            };
+
+            controls.appendChild(deleteButton);
+            controls.appendChild(clearButton);
+
+            // Ensamblar componentes
+            tableDiv.appendChild(nameElement);
+            tableDiv.appendChild(grid);
+            tableDiv.appendChild(controls);
+            document.getElementById('tablesContainer').appendChild(tableDiv);
+
+            clearInputs();
+        }
+
+        // Limpiar campos de entrada
+        function clearInputs() {
+            document.querySelectorAll('#inputGrid .input-cell:not(.free-space)').forEach(input => {
+                input.value = '';
+            });
+            document.getElementById('tableName').value = '';
+        }
+
+        // Función para buscar y marcar números
+        function searchNumber() {
+            const searchValue = document.getElementById('searchInput').value.trim();
+            if (!searchValue) return;
+            
+            document.querySelectorAll('.bingo-cell').forEach(cell => {
+                if (cell.textContent === searchValue && cell.textContent !== 'FREE') {
+                    cell.classList.add('highlight');
+                }
+            });
+            
+            // Limpiar el campo de búsqueda después de marcar
+            document.getElementById('searchInput').value = '';
+        }
+
+        // Función para limpiar todos los resaltados
+        function clearAllHighlights() {
+            document.querySelectorAll('.bingo-cell').forEach(cell => {
+                cell.classList.remove('highlight');
+            });
+        }
+
+        // Inicializar la cuadrícula al cargar la página
+        initializeInputGrid();
+    </script>
+</body>
+</html>
