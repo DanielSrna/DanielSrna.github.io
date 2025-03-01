@@ -6,66 +6,67 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 15px;
+            max-width: 1200px;
         }
 
         .section {
-            margin-bottom: 40px;
-            padding: 20px;
+            margin-bottom: 25px;
+            padding: 15px;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 8px;
         }
 
         .input-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 5px;
-            margin: 20px 0;
+            gap: 3px;
+            margin: 15px 0;
+            max-width: 300px;
         }
 
         .input-cell {
-            width: 50px;
-            height: 50px;
+            width: 100%;
+            height: 40px;
             text-align: center;
             border: 1px solid #999;
-            border-radius: 3px;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
         }
 
         .free-space {
             background-color: #eee;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8em;
+            font-size: 0.7em;
         }
 
         .bingo-table {
-            display: inline-block;
-            margin: 10px;
-            padding: 15px;
+            display: block;
+            margin: 15px auto;
+            padding: 10px;
             border: 2px solid #666;
-            border-radius: 10px;
-            vertical-align: top;
+            border-radius: 8px;
+            max-width: 300px;
         }
 
         .bingo-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 3px;
+            gap: 2px;
             margin: 10px 0;
         }
 
         .bingo-cell {
-            width: 40px;
-            height: 40px;
+            width: 100%;
+            aspect-ratio: 1;
             border: 1px solid #999;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
+            font-size: 14px;
             background-color: white;
+            box-sizing: border-box;
         }
 
         .highlight {
@@ -74,38 +75,68 @@
 
         .controls {
             margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
         }
 
         button {
-            padding: 8px 15px;
-            margin: 5px;
-            cursor: pointer;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 3px;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        button.clear-all {
-            background-color: #f44336;
-        }
-
-        button.clear-all:hover {
-            background-color: #da190b;
+            padding: 8px 12px;
+            margin: 3px;
+            font-size: 14px;
+            flex: 1;
+            min-width: 120px;
         }
 
         input[type="text"] {
-            padding: 5px;
-            margin: 5px;
-            width: 200px;
+            padding: 8px;
+            margin: 5px 0;
+            width: 100%;
+            box-sizing: border-box;
+            max-width: 300px;
         }
 
         .search-section {
-            margin: 20px 0;
+            margin: 15px 0;
+        }
+
+        h2 {
+            font-size: 1.3em;
+            margin: 10px 0;
+        }
+
+        h3 {
+            font-size: 1.1em;
+            margin: 8px 0;
+            text-align: center;
+        }
+
+        @media (min-width: 600px) {
+            .bingo-table {
+                display: inline-block;
+                margin: 10px;
+                max-width: none;
+            }
+            
+            .input-grid {
+                max-width: none;
+            }
+            
+            .input-cell {
+                height: 50px;
+                font-size: 16px;
+            }
+            
+            button {
+                flex: none;
+                min-width: auto;
+            }
+            
+            .bingo-cell {
+                font-size: 16px;
+                width: 40px;
+                height: 40px;
+            }
         }
     </style>
 </head>
@@ -123,23 +154,35 @@
     <div class="section search-section">
         <h2>Buscar Número</h2>
         <input type="text" id="searchInput" placeholder="Ingrese número a buscar">
-        <button onclick="searchNumber()">Buscar</button>
-        <button onclick="clearAllHighlights()" class="clear-all">Limpiar Todo</button>
-    </div>
+        <div class="controls">
+            <button onclick="searchNumber()">Buscar</button>
+            <button onclick="clearAllHighlights()" class="clear-all">Limpiar Todo</button>
+        </div>
+    </div> 
 
     <div id="tablesContainer"></div>
 
+
     <script>
+        // Variable para almacenar todas las tablas
+        let bingoTables = [];
+    
+        // Al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeInputGrid();
+            loadSavedTables();
+        });
+    
         // Inicializar la cuadrícula de entrada
         function initializeInputGrid() {
             const grid = document.getElementById('inputGrid');
+            grid.innerHTML = '';
             for (let i = 0; i < 25; i++) {
                 const cell = document.createElement('input');
                 cell.type = 'text';
                 cell.className = 'input-cell';
                 cell.maxLength = 2;
                 
-                // Marcar la celda central como espacio libre
                 if (i === 12) {
                     cell.placeholder = 'FREE';
                     cell.disabled = true;
@@ -148,57 +191,93 @@
                 grid.appendChild(cell);
             }
         }
-
-        // Crear nueva tabla de bingo
+    
+        // Guardar tablas en localStorage
+        function saveTables() {
+            localStorage.setItem('bingoTables', JSON.stringify(bingoTables));
+        }
+    
+        // Cargar tablas guardadas
+        function loadSavedTables() {
+            const saved = localStorage.getItem('bingoTables');
+            if (saved) {
+                bingoTables = JSON.parse(saved);
+                bingoTables.forEach(createTableElement);
+            }
+        }
+    
+        // Crear nueva tabla (modificada para persistencia)
         function createBingoTable() {
             const inputs = document.querySelectorAll('#inputGrid .input-cell:not(.free-space)');
             const tableName = document.getElementById('tableName').value;
-            
-            // Validar que todos los campos estén llenos
+    
+            // Validar campos
             let isValid = true;
             inputs.forEach(input => {
                 if (!input.value.trim()) isValid = false;
             });
-
+    
             if (!isValid) {
                 alert('¡Debes llenar todos los campos!');
                 return;
             }
-
-            // Crear contenedor de tabla
+    
+            // Crear objeto de tabla
+            const newTable = {
+                name: tableName || 'Tabla sin nombre',
+                numbers: []
+            };
+    
+            // Llenar números
+            for (let i = 0; i < 25; i++) {
+                newTable.numbers.push(
+                    i === 12 ? 'FREE' : inputs[i < 12 ? i : i - 1].value
+                );
+            }
+    
+            // Guardar y crear
+            bingoTables.push(newTable);
+            saveTables();
+            createTableElement(newTable);
+            clearInputs();
+        }
+    
+        // Crear elemento HTML de tabla (modificado para persistencia)
+        function createTableElement(tableData) {
             const tableDiv = document.createElement('div');
             tableDiv.className = 'bingo-table';
             
-            // Nombre de la tabla
+            // Nombre
             const nameElement = document.createElement('h3');
-            nameElement.textContent = tableName || 'Tabla sin nombre';
+            nameElement.textContent = tableData.name;
             
-            // Crear cuadrícula de bingo
+            // Grid
             const grid = document.createElement('div');
             grid.className = 'bingo-grid';
             
-            for (let i = 0; i < 25; i++) {
+            tableData.numbers.forEach(number => {
                 const cell = document.createElement('div');
                 cell.className = 'bingo-cell';
-                
-                if (i === 12) {
-                    cell.textContent = 'FREE';
-                    cell.style.backgroundColor = '#eee';
-                } else {
-                    const index = i < 12 ? i : i - 1;
-                    cell.textContent = inputs[index].value;
-                }
+                cell.textContent = number;
+                if (number === 'FREE') cell.style.backgroundColor = '#eee';
                 grid.appendChild(cell);
-            }
-
+            });
+    
             // Botones de control
             const controls = document.createElement('div');
             controls.className = 'controls';
             
+            // Botón eliminar
             const deleteButton = document.createElement('button');
             deleteButton.textContent = 'Eliminar Tabla';
-            deleteButton.onclick = () => tableDiv.remove();
+            deleteButton.onclick = () => {
+                // Eliminar de la lista y almacenamiento
+                bingoTables = bingoTables.filter(t => t !== tableData);
+                saveTables();
+                tableDiv.remove();
+            };
             
+            // Botón limpiar marcadores
             const clearButton = document.createElement('button');
             clearButton.textContent = 'Limpiar Marcadores';
             clearButton.onclick = () => {
@@ -206,19 +285,17 @@
                     cell.classList.remove('highlight');
                 });
             };
-
+    
             controls.appendChild(deleteButton);
             controls.appendChild(clearButton);
-
-            // Ensamblar componentes
+    
+            // Ensamblar
             tableDiv.appendChild(nameElement);
             tableDiv.appendChild(grid);
             tableDiv.appendChild(controls);
             document.getElementById('tablesContainer').appendChild(tableDiv);
-
-            clearInputs();
         }
-
+    
         // Limpiar campos de entrada
         function clearInputs() {
             document.querySelectorAll('#inputGrid .input-cell:not(.free-space)').forEach(input => {
@@ -226,8 +303,8 @@
             });
             document.getElementById('tableName').value = '';
         }
-
-        // Función para buscar y marcar números
+    
+        // Buscar número
         function searchNumber() {
             const searchValue = document.getElementById('searchInput').value.trim();
             if (!searchValue) return;
@@ -237,20 +314,15 @@
                     cell.classList.add('highlight');
                 }
             });
-            
-            // Limpiar el campo de búsqueda después de marcar
             document.getElementById('searchInput').value = '';
         }
-
-        // Función para limpiar todos los resaltados
+    
+        // Limpiar todos los resaltados
         function clearAllHighlights() {
             document.querySelectorAll('.bingo-cell').forEach(cell => {
                 cell.classList.remove('highlight');
             });
         }
-
-        // Inicializar la cuadrícula al cargar la página
-        initializeInputGrid();
     </script>
 </body>
 </html>
