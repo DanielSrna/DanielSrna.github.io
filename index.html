@@ -9,9 +9,11 @@
             margin: 0 auto;
             padding: 15px;
             max-width: 1200px;
+            background-color: #444444;
         }
 
         .section {
+            margin-top: 100px;
             margin-bottom: 25px;
             padding: 15px;
             border: 1px solid #ccc;
@@ -99,8 +101,34 @@
         .search-section {
             margin: 15px 0;
         }
+        .titulo {
+            width: 300px;
+            height: 200px;
+            position: absolute;
+            /*centramos horizontalmente el div*/
+            left: 50%;
+            margin-left: -150px;
+            margin-top: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin: 10;
+            animation-name: font;
+            animation-duration: 1s;
+            animation-iteration-count: infinite;
+            color: white;
+        }
+        /*Animnación font*/
+        @keyframes font {
+            0% {font-size: 20px; color: blue;}
+            25% {color: #ffeb3b; rotate: 15deg;}
+            50% {font-size: 30px;}
+            75% {color: red; rotate: -15deg;}
+            100% {font-size: 20px;}
+        }
 
         h2 {
+            color: white;
             font-size: 1.3em;
             margin: 10px 0;
         }
@@ -109,6 +137,7 @@
             font-size: 1.1em;
             margin: 8px 0;
             text-align: center;
+            color: white;
         }
 
         @media (min-width: 600px) {
@@ -141,6 +170,10 @@
     </style>
 </head>
 <body>
+    <div class="titulo">
+        <h1>Maxine es boba</h1>
+    </div>
+
     <div class="section">
         <h2>Crear Nueva Tabla</h2>
         <div class="input-grid" id="inputGrid"></div>
@@ -173,20 +206,28 @@
             loadSavedTables();
         });
     
-        // Inicializar la cuadrícula de entrada
+        // Inicializar la cuadrícula de entrada (MODIFICADO PARA TECLADO NUMÉRICO)
         function initializeInputGrid() {
             const grid = document.getElementById('inputGrid');
             grid.innerHTML = '';
             for (let i = 0; i < 25; i++) {
                 const cell = document.createElement('input');
                 cell.type = 'text';
+                cell.inputMode = 'numeric'; // Teclado numérico en móviles
+                cell.pattern = '[0-9]*';     // Ayuda a navegadores móviles
                 cell.className = 'input-cell';
                 cell.maxLength = 2;
                 
+                // Sanitizar entrada: solo números
+                cell.oninput = function() {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                };
+    
                 if (i === 12) {
                     cell.placeholder = 'FREE';
                     cell.disabled = true;
                     cell.className = 'input-cell free-space';
+                    cell.oninput = null; // Quitar validación para celda FREE
                 }
                 grid.appendChild(cell);
             }
@@ -206,7 +247,7 @@
             }
         }
     
-        // Crear nueva tabla (modificada para persistencia)
+        // Crear nueva tabla
         function createBingoTable() {
             const inputs = document.querySelectorAll('#inputGrid .input-cell:not(.free-space)');
             const tableName = document.getElementById('tableName').value;
@@ -242,7 +283,7 @@
             clearInputs();
         }
     
-        // Crear elemento HTML de tabla (modificado para persistencia)
+        // Crear elemento HTML de tabla
         function createTableElement(tableData) {
             const tableDiv = document.createElement('div');
             tableDiv.className = 'bingo-table';
@@ -271,7 +312,6 @@
             const deleteButton = document.createElement('button');
             deleteButton.textContent = 'Eliminar Tabla';
             deleteButton.onclick = () => {
-                // Eliminar de la lista y almacenamiento
                 bingoTables = bingoTables.filter(t => t !== tableData);
                 saveTables();
                 tableDiv.remove();
