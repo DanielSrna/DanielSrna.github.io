@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa OpenStreetMap</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="weather-overlay">
+        <h3>Clima Actual</h3>
+        <p id="weather-description">Cargando...</p>
+        <p id="weather-temp">--°C</p>
+        <p id="weather-humidity">Humedad: --%</p>
+        <p id="weather-wind">Viento: -- m/s</p>
+        <p id="weather-feels-like">Sensación térmica: --°C</p>
+        <p id="weather-pressure">Presión: -- hPa</p>
+        <p id="weather-visibility">Visibilidad: -- km</p>
+    </div>
+    <div id="layer-controls">
+        <label><input type="radio" name="weatherLayer" value="none" checked> Ninguna</label><br>
+        <label><input type="radio" name="weatherLayer" value="precipitation_new"> Precipitación</label><br>
+        <label><input type="radio" name="weatherLayer" value="temp_new"> Temperatura</label><br>
+        <label><input type="radio" name="weatherLayer" value="clouds_new"> Nubes</label><br>
+        <label><input type="radio" name="weatherLayer" value="wind_new"> Viento</label><br>
+        <div class="opacity-control">
+            <label for="opacity">Opacidad: <span id="opacity-value">100%</span></label><br>
+            <input type="range" id="opacity" min="0" max="100" value="100">
+        </div>
+    </div>
+    <div id="map"></div>
+
+    <button id="forecast-button">Ver Pronóstico 3h</button>
+
+    <!-- Modal para el Pronóstico -->
+    <div id="forecast-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3>Pronóstico Próximas Horas</h3>
+            <div id="forecast-data">
+                <!-- Los datos del pronóstico se insertarán aquí -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+    <script src="script.js"></script>
+</body>
+</html>
