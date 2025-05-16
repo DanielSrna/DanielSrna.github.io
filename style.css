@@ -9,27 +9,6 @@ body {
     width: 100%;
 }
 
-#weather-overlay {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-}
-
-#weather-overlay h3 {
-    margin: 0 0 10px 0;
-    font-size: 16px;
-}
-
-#weather-overlay p {
-    margin: 5px 0;
-    font-size: 14px;
-}
-
 #layer-controls {
     position: absolute;
     top: 20px;
@@ -41,11 +20,39 @@ body {
     z-index: 1000;
 }
 
+/* Estilos para el contenedor de botones de acción */
+#action-buttons {
+    position: absolute;
+    bottom: 20px; /* Ajustado para la esquina inferior izquierda */
+    left: 20px;   /* Ajustado para la esquina inferior izquierda */
+    z-index: 1000;
+    display: flex;
+    flex-direction: column; /* Apila los botones verticalmente */
+}
+
+#action-buttons button {
+    margin-bottom: 5px; /* Espacio entre botones */
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#action-buttons button:hover {
+    background-color: #0056b3;
+}
+
 /* Estilos para responsividad */
 @media (max-width: 768px) {
-    #weather-overlay, #layer-controls {
+    /* #weather-overlay, */ #layer-controls, #action-buttons button { /* Eliminado #weather-overlay de aquí */
         padding: 10px;
         font-size: 12px;
+    }
+    #action-buttons {
+        bottom: 10px;
+        left: 10px;
     }
 }
 
@@ -70,10 +77,29 @@ body {
     margin: 15% auto; /* 15% desde arriba y centrado */
     padding: 20px;
     border: 1px solid #888;
-    width: 80%; /* Podría ser más o menos, dependiendo del diseño */
+    width: 30%; /* Podría ser más o menos, dependiendo del diseño */
     max-width: 600px; /* Ancho máximo */
     border-radius: 8px;
     position: relative;
+}
+
+/* Nuevo: Estilos para el contenedor de detalles del clima actual (descripción e icono) */
+#current-weather-details {
+    display: flex; /* Habilita Flexbox */
+    justify-content: space-between; /* Espacia los elementos */
+    align-items: center; /* Centra verticalmente los elementos */
+    margin-bottom: 15px; /* Espacio debajo del contenedor */
+}
+
+#current-weather-details p {
+    margin: 0; /* Quita el margen por defecto del párrafo */
+    flex-grow: 1; /* Permite que la descripción ocupe el espacio disponible */
+}
+
+#weather-icon {
+    width: 100px; /* Tamaño del icono aumentado */
+    height: 100px; /* Tamaño del icono aumentado */
+    margin-left: 20px; /* Espacio a la izquierda del icono */
 }
 
 .close-button {
@@ -90,23 +116,6 @@ body {
     cursor: pointer;
 }
 
-#forecast-button {
-    position: absolute;
-    top: 10px;
-    right: 150px; /* Ajustar según sea necesario para no superponerse con otros controles */
-    z-index: 1000;
-    padding: 8px 12px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-#forecast-button:hover {
-    background-color: #0056b3;
-}
-
 #forecast-data .forecast-item {
     border-bottom: 1px solid #eee;
     padding: 10px 0;
@@ -118,4 +127,64 @@ body {
 
 #forecast-data h4 {
     margin-top: 0;
+}
+
+/* Estilos para el modal de opciones de pronóstico */
+#forecast-duration-options {
+    display: flex;
+    flex-wrap: wrap; /* Permite que los botones pasen a la siguiente línea si no caben */
+    justify-content: center; /* Centra los botones */
+    gap: 10px; /* Espacio entre botones */
+    margin-top: 20px;
+}
+
+#forecast-duration-options button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#forecast-duration-options button:hover {
+    background-color: #0056b3;
+}
+
+/* Estilos para el modal de evaluación de lavandería */
+#laundry-result .result-level {
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+#laundry-result .level-1 {
+    background-color: #d4edda; /* Verde claro para Excelente */
+    color: #155724;
+}
+
+#laundry-result .level-2 {
+    background-color: #fff3cd; /* Amarillo claro para Bueno */
+    color: #856404;
+}
+
+#laundry-result .level-3 {
+    background-color: #ffeeba; /* Naranja claro para Arriesgado */
+    color: #856404; /* Similar al amarillo, ajustar si se desea más contraste */
+}
+
+#laundry-result .level-4 {
+    background-color: #f8d7da; /* Rojo claro para Malo */
+    color: #721c24;
+}
+
+#laundry-result h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+#laundry-result p {
+    margin-bottom: 5px;
 }

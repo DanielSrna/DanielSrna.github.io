@@ -10,16 +10,31 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="weather-overlay">
-        <h3>Clima Actual</h3>
-        <p id="weather-description">Cargando...</p>
-        <p id="weather-temp">--°C</p>
-        <p id="weather-humidity">Humedad: --%</p>
-        <p id="weather-wind">Viento: -- m/s</p>
-        <p id="weather-feels-like">Sensación térmica: --°C</p>
-        <p id="weather-pressure">Presión: -- hPa</p>
-        <p id="weather-visibility">Visibilidad: -- km</p>
+    <!-- Contenedor para los botones de acción -->
+    <div id="action-buttons">
+        <button id="current-weather-button">Clima Actual</button>
+        <button id="forecast-button">Ver pronóstico</button>
+        <button id="laundry-button">¿Puedo colgar la ropa?</button> <!-- Nuevo botón -->
     </div>
+
+    <!-- Modal para el Clima Actual -->
+    <div id="current-weather-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3>Clima Actual</h3>
+            <div id="current-weather-details"> <!-- Contenedor para descripción e icono -->
+                <img id="weather-icon" src="" alt="Icono del clima" style="display: none;"> <!-- Icono del clima -->
+                <p id="weather-description">Cargando...</p>
+            </div>
+            <p id="weather-temp">--°C</p>
+            <p id="weather-humidity">Humedad: --%</p>
+            <p id="weather-wind">Viento: -- m/s</p>
+            <p id="weather-feels-like">Sensación térmica: --°C</p>
+            <p id="weather-pressure">Presión: -- hPa</p>
+            <p id="weather-visibility">Visibilidad: -- km</p>
+        </div>
+    </div>
+
     <div id="layer-controls">
         <label><input type="radio" name="weatherLayer" value="none" checked> Ninguna</label><br>
         <label><input type="radio" name="weatherLayer" value="precipitation_new"> Precipitación</label><br>
@@ -30,10 +45,33 @@
             <label for="opacity">Opacidad: <span id="opacity-value">100%</span></label><br>
             <input type="range" id="opacity" min="0" max="100" value="100">
         </div>
+        <!-- Nuevo control de brillo -->
+        <div class="brightness-control">
+            <label for="brightness">Brillo: <span id="brightness-value">100%</span></label><br>
+            <input type="range" id="brightness" min="50" max="200" value="100">
+        </div>
+        <!-- Nuevo control de contraste -->
+        <div class="contrast-control">
+            <label for="contrast">Contraste: <span id="contrast-value">100%</span></label><br>
+            <input type="range" id="contrast" min="50" max="200" value="100">
+        </div>
     </div>
     <div id="map"></div>
 
-    <button id="forecast-button">Ver Pronóstico 3h</button>
+    <!-- Modal para Opciones de Pronóstico -->
+    <div id="forecast-options-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3>Seleccionar Duración del Pronóstico</h3>
+            <div id="forecast-duration-options">
+                <button class="duration-option" data-hours="3">3 horas (1 intervalo)</button>
+                <button class="duration-option" data-hours="6">6 horas (2 intervalos)</button>
+                <button class="duration-option" data-hours="12">12 horas (4 intervalos)</button>
+                <button class="duration-option" data-hours="24">24 horas (8 intervalos)</button>
+            </div>
+            <!-- <p>Se mostrarán datos en intervalos de 3 horas.</p> -->
+        </div>
+    </div>
 
     <!-- Modal para el Pronóstico -->
     <div id="forecast-modal" class="modal">
@@ -42,6 +80,17 @@
             <h3>Pronóstico Próximas Horas</h3>
             <div id="forecast-data">
                 <!-- Los datos del pronóstico se insertarán aquí -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Evaluación de Lavandería -->
+    <div id="laundry-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3>¿Es buen momento para colgar la ropa?</h3>
+            <div id="laundry-result">
+                <!-- El resultado de la evaluación se insertará aquí -->
             </div>
         </div>
     </div>
